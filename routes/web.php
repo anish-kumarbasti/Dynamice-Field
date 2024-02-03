@@ -40,4 +40,7 @@ Route::middleware([
     Route::get('manage/product/edit/{id}', [ManageProductController::class, 'edit'])->name('manage.product.edit');
     Route::put('manage/product/update/{id}', [ManageProductController::class, 'update'])->name('manage.product.update');
     Route::delete('manage/product/delete/{id}', [ManageProductController::class, 'destroy'])->name('manage.product.delete');
+
+    //Shop product
+    Route::get('shops/products', [ManageProductController::class, 'shopproduct'])->name('shops.products');
 });

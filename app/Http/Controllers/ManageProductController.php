@@ -76,6 +76,15 @@ class ManageProductController extends Controller
     }
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'category_id' => 'required',
+            'sub_category_id' => 'required',
+            'product_name' => 'required',
+            'price' => 'required',
+            'discount' => 'required',
+            'final_price' => 'required',
+
+        ]);
         $product = ManageProduct::find($id);
 
         $product->category_id = $request->input('category_id');
@@ -104,5 +113,11 @@ class ManageProductController extends Controller
         $product = ManageProduct::findOrFail($id);
         $product->delete();
         return redirect()->back()->with('success', 'Product Delete Successfully');
+    }
+
+    public function shopproduct()
+    {
+        $shop = ManageProduct::all();
+        return view('admin.shop.index', compact('shop'));
     }
 }
