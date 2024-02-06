@@ -43,4 +43,7 @@ Route::middleware([
 
     //Shop product
     Route::get('shops/products', [ManageProductController::class, 'shopproduct'])->name('shops.products');
+    Route::post('add/to/card', [ManageProductController::class, 'addtoproduct'])->name('addtocard');
+    Route::get('user/cart/products', [ManageProductController::class, 'usercart'])->name('user.cart.product');
+    Route::get('remove/user/card/{id}', [ManageProductController::class, 'usercartremove'])->name('remove.cart.product');
 });

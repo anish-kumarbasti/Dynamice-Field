@@ -58,9 +58,10 @@
                     <p class="p-3 mb-0 text-center">See all projects</p>
                 </div>
             </li>
-            <li class="nav-item nav-settings d-none d-lg-block">
-                <a class="nav-link" href="#">
-                    <i class="mdi mdi-view-grid"></i>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url('user/cart/products') }}">
+                    <i class="mdi mdi-cart"></i>
+                    <span class="count bg-danger"></span>
                 </a>
             </li>
             <li class="nav-item dropdown border-left">

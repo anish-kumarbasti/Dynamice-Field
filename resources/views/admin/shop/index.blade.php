@@ -1,10 +1,8 @@
 @extends('admin.layout.master')
 @section('content')
-<div class="container mt-3">
-    <h4>Cart Summary</h4>
-    <p id="cartCount">Items in Cart: 0</p>
-    <p id="cartTotal">Total: ₹ 0</p>
-</div>
+    <div class="alert alert-success mt-3" id="message" style="display: none">
+        Product Added to your card !
+    </div>
     <div class="card-header">
         <h4>Add Items</h4>
     </div>
@@ -14,13 +12,15 @@
             @foreach ($shop as $shops)
                 <div class="col-md-3">
                     <div class="card">
-                        <img class="card-img-top" src="{{ asset($shops->image) }}" alt="Card image cap" height="100px" width="120px">
+                        <img class="card-img-top" src="{{ asset($shops->image) }}" alt="Card image cap" height="100px"
+                            width="120px">
                         <div class="card-body">
-                            <h5 class="card-title">{{$shops->product_name??'N/A'}}</h5>
-                            <p class="card-text">₹ {{$shops->final_price??'N/A'}}</p>
+                            <h5 class="card-title">{{ $shops->product_name ?? 'N/A' }}</h5>
+                            <p class="card-text">₹ {{ $shops->final_price ?? 'N/A' }}</p>
                         </div>
                         <div class="card-footer">
-                            <button class="btn btn-primary" onclick="addToCart('{{$shops->product_name}}', '{{$shops->final_price}}')">Add to Cart</button>
+                            <button class="btn btn-primary add_to_card" data-product-id="{{ $shops->id }}">Add to
+                                Cart</button>
                         </div>
                     </div>
                 </div>
@@ -28,16 +28,43 @@
         </div>
     </div>
 @endsection
-
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
-    let cartCount = 0;
-    let cartTotal = 0;
+    $(document).ready(function() {
+        $('.add_to_card').click(function(e) {
+            e.preventDefault();
+            var productId = $(this).data('product-id');
+            var userId = "{{ Auth::user()->id }}";
+            // var fprice = "{{ $shops->final_price ?? 'N/A' }}";
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+            // console.log("Product Id" + productId + userId + fprice);
 
-    function addToCart(productName, price) {
-        cartCount++;
-        cartTotal += parseFloat(price);
+            $.ajax({
+                type: "post",
+                url: '/add/to/card',
+                data: {
+                    product_id: productId,
+                    user_id: userId,
+                    // fprice: fprice,
+                    _token: csrfToken
+                },
+                success: function(response) {
+                    console.log(response);
+                    showClosemessage();
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
 
-        document.getElementById('cartCount').innerText = `Items in Cart: ${cartCount}`;
-        document.getElementById('cartTotal').innerText = `Total: ₹ ${cartTotal.toFixed(2)}`;
-    }
+        function showClosemessage() {
+            $('#message').show();
+
+            setTimeout(function() {
+                $('#message').hide();
+            }, 2000);
+
+        }
+    });
 </script>

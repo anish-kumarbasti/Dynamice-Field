@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CardModel;
 use App\Models\CategoryModel;
 use App\Models\ManageProduct;
 use App\Models\SubCategoryModel;
@@ -119,5 +120,34 @@ class ManageProductController extends Controller
     {
         $shop = ManageProduct::all();
         return view('admin.shop.index', compact('shop'));
+    }
+    public function addtoproduct(Request $request)
+    {
+        $productId = $request->product_id;
+        $product = ManageProduct::find($productId);
+        $price = $product->final_price;
+        $product_id = $request->input('product_id');
+        $user_id = $request->input('user_id');
+
+        CardModel::create([
+            'product_id' => $product_id,
+            'user_id' => $user_id,
+            'total_price' => $price
+        ]);
+        return response()->json(['status' => 'success']);
+    }
+
+    public function usercart()
+    {
+        $user = Auth()->user();
+        $userid = $user->id;
+        $usercard = CardModel::find($userid)->with('product')->get();
+        return view('admin.shop.usercart', compact('usercard'));
+    }
+    public function usercartremove($id)
+    {
+        $product = CardModel::findOrFail($id);
+        $product->delete();
+        return redirect()->back()->with('success', 'Remove cart Successfully');
     }
 }
